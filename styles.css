@@ -75,6 +75,10 @@ main {
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 10px;
 }
 
 #mapCanvas, #overlayCanvas {
@@ -82,12 +86,14 @@ main {
     cursor: crosshair;
     max-width: 100%;
     height: auto;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
 #overlayCanvas {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 10px;
+    left: 10px;
     pointer-events: none;
 }
 

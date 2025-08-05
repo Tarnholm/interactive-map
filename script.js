@@ -14,14 +14,18 @@ class RGBBasedInteractiveMap {
         // RGB-based region data
         this.regionData = new Map(); // RGB key -> region info
         this.rgbToRegionMap = new Map(); // "r,g,b" -> region object
+        
+        // Performance optimizations
+        this.regionPixelCache = new Map(); // Cache pixel coordinates for each region
         this.performanceMetrics = {
             lookupCount: 0,
             totalLookupTime: 0
         };
         
-        // Colors for visual feedback
-        this.selectionColor = 'rgba(52, 152, 219, 0.5)'; // Blue overlay
-        this.hoverColor = 'rgba(231, 76, 60, 0.4)'; // Red overlay
+        // Enhanced visual feedback colors
+        this.selectionColor = 'rgba(52, 152, 219, 0.6)'; // Enhanced blue overlay
+        this.hoverColor = 'rgba(231, 76, 60, 0.5)'; // Enhanced red overlay
+        this.borderColor = 'rgba(44, 62, 80, 0.8)'; // Dark border for selected regions
         
         this.init();
     }
@@ -142,10 +146,22 @@ class RGBBasedInteractiveMap {
                 const width = this.mapImage.width;
                 const height = this.mapImage.height;
                 
+                // Ensure proper canvas sizing to match image dimensions exactly
                 this.canvas.width = width;
                 this.canvas.height = height;
                 this.overlayCanvas.width = width;
                 this.overlayCanvas.height = height;
+                
+                // Set CSS dimensions to maintain aspect ratio and responsive design
+                const maxWidth = Math.min(1200, window.innerWidth - 400); // Leave space for sidebar
+                const aspectRatio = height / width;
+                const cssWidth = Math.min(maxWidth, width);
+                const cssHeight = cssWidth * aspectRatio;
+                
+                this.canvas.style.width = `${cssWidth}px`;
+                this.canvas.style.height = `${cssHeight}px`;
+                this.overlayCanvas.style.width = `${cssWidth}px`;
+                this.overlayCanvas.style.height = `${cssHeight}px`;
                 
                 // Draw the geographical map image
                 this.ctx.drawImage(this.mapImage, 0, 0);
@@ -153,7 +169,8 @@ class RGBBasedInteractiveMap {
                 // Get image data for pixel analysis
                 this.imageData = this.ctx.getImageData(0, 0, width, height);
                 
-                console.log('Geographical map loaded successfully');
+                console.log(`Geographical map loaded successfully (${width}x${height})`);
+                console.log(`Canvas sized for responsive display (${cssWidth}x${cssHeight})`);
                 resolve();
             };
             this.mapImage.onerror = () => {
@@ -165,8 +182,30 @@ class RGBBasedInteractiveMap {
     }
     
     buildRGBLookupCache() {
-        // The cache is already built during parsing, but we can optimize it here
-        console.log(`RGB lookup cache built with ${this.rgbToRegionMap.size} entries`);
+        // Build pixel coordinate cache for better overlay performance
+        this.showLoading('Building pixel cache for smooth interactions...');
+        const data = this.imageData.data;
+        
+        // Cache pixel coordinates for each region for faster overlay rendering
+        for (let i = 0; i < data.length; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            const rgbKey = `${r},${g},${b}`;
+            
+            if (this.rgbToRegionMap.has(rgbKey)) {
+                if (!this.regionPixelCache.has(rgbKey)) {
+                    this.regionPixelCache.set(rgbKey, []);
+                }
+                const pixelIndex = i / 4;
+                const x = pixelIndex % this.canvas.width;
+                const y = Math.floor(pixelIndex / this.canvas.width);
+                this.regionPixelCache.get(rgbKey).push({ x, y });
+            }
+        }
+        
+        console.log(`RGB lookup cache built with ${this.rgbToRegionMap.size} regions`);
+        console.log(`Pixel cache built for ${this.regionPixelCache.size} regions with optimized rendering`);
     }
     
     setupEventListeners() {
@@ -177,8 +216,26 @@ class RGBBasedInteractiveMap {
         const clearButton = document.getElementById('clearAll');
         clearButton.addEventListener('click', () => this.clearAllSelections());
         
+        // Add window resize listener for responsive canvas
+        window.addEventListener('resize', () => this.handleResize());
+        
         // Update clear button state
         this.updateClearButtonState();
+    }
+    
+    handleResize() {
+        if (!this.mapImage) return;
+        
+        // Maintain aspect ratio and responsive design on resize
+        const maxWidth = Math.min(1200, window.innerWidth - 400);
+        const aspectRatio = this.mapImage.height / this.mapImage.width;
+        const cssWidth = Math.min(maxWidth, this.mapImage.width);
+        const cssHeight = cssWidth * aspectRatio;
+        
+        this.canvas.style.width = `${cssWidth}px`;
+        this.canvas.style.height = `${cssHeight}px`;
+        this.overlayCanvas.style.width = `${cssWidth}px`;
+        this.overlayCanvas.style.height = `${cssHeight}px`;
     }
     
     getMousePos(e) {
@@ -186,9 +243,14 @@ class RGBBasedInteractiveMap {
         const scaleX = this.canvas.width / rect.width;
         const scaleY = this.canvas.height / rect.height;
         
+        // Ensure pixel-perfect coordinate mapping
+        const x = Math.floor((e.clientX - rect.left) * scaleX);
+        const y = Math.floor((e.clientY - rect.top) * scaleY);
+        
+        // Clamp coordinates to canvas bounds for safety
         return {
-            x: Math.floor((e.clientX - rect.left) * scaleX),
-            y: Math.floor((e.clientY - rect.top) * scaleY)
+            x: Math.max(0, Math.min(x, this.canvas.width - 1)),
+            y: Math.max(0, Math.min(y, this.canvas.height - 1))
         };
     }
     
@@ -282,24 +344,47 @@ class RGBBasedInteractiveMap {
         const region = this.rgbToRegionMap.get(rgbKey);
         if (!region || !region.rgb) return;
         
+        // Use cached pixel coordinates for much better performance
+        const pixelCoords = this.regionPixelCache.get(rgbKey);
+        if (!pixelCoords || pixelCoords.length === 0) return;
+        
         this.overlayCtx.fillStyle = color;
         
-        // Scan through all pixels to find matching RGB values
-        // This is more efficient than flood-fill for our use case
-        const imageData = this.imageData;
-        const data = imageData.data;
+        // Draw all pixels for the region
+        for (const coord of pixelCoords) {
+            this.overlayCtx.fillRect(coord.x, coord.y, 1, 1);
+        }
         
-        for (let i = 0; i < data.length; i += 4) {
-            const r = data[i];
-            const g = data[i + 1];
-            const b = data[i + 2];
+        // Add simple border effect for selected regions (simplified for performance)
+        if (this.selectedRegions.has(rgbKey)) {
+            this.overlayCtx.strokeStyle = this.borderColor;
+            this.overlayCtx.lineWidth = 1;
             
-            if (r === region.rgb.r && g === region.rgb.g && b === region.rgb.b) {
-                const pixelIndex = i / 4;
-                const x = pixelIndex % this.canvas.width;
-                const y = Math.floor(pixelIndex / this.canvas.width);
+            // Draw a simple outline by checking edge pixels more efficiently
+            this.overlayCtx.fillStyle = this.borderColor;
+            for (const coord of pixelCoords) {
+                const { x, y } = coord;
                 
-                this.overlayCtx.fillRect(x, y, 1, 1);
+                // Simple edge detection - check if any immediate neighbor is not part of region
+                const hasExternalNeighbor = [
+                    { x: x - 1, y },
+                    { x: x + 1, y },
+                    { x, y: y - 1 },
+                    { x, y: y + 1 }
+                ].some(neighbor => {
+                    if (neighbor.x < 0 || neighbor.x >= this.canvas.width || 
+                        neighbor.y < 0 || neighbor.y >= this.canvas.height) {
+                        return true; // Edge of canvas
+                    }
+                    
+                    const pixelData = this.getPixelData(neighbor.x, neighbor.y);
+                    const neighborRgbKey = `${pixelData.r},${pixelData.g},${pixelData.b}`;
+                    return neighborRgbKey !== rgbKey;
+                });
+                
+                if (hasExternalNeighbor) {
+                    this.overlayCtx.fillRect(x, y, 1, 1);
+                }
             }
         }
     }
