@@ -31,7 +31,7 @@ class RGBBasedInteractiveMap {
             this.showLoading('Loading region data...');
             await this.loadRegionData();
             
-            this.showLoading('Generating color-coded map...');
+            this.showLoading('Loading map image...');
             await this.createColorCodedMap();
             
             this.showLoading('Building RGB lookup cache...');
@@ -135,7 +135,45 @@ class RGBBasedInteractiveMap {
     }
     
     async createColorCodedMap() {
-        // Create a color-coded map where each region has its unique RGB color
+        // Try to load the actual Rome Remastered map image first
+        try {
+            await this.loadMapImage();
+        } catch (error) {
+            console.log('Map image not found, falling back to generated squares:', error.message);
+            this.createGeneratedMap();
+        }
+        
+        // Get image data for pixel analysis
+        this.imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        
+        console.log('Map created successfully');
+    }
+
+    async loadMapImage() {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => {
+                // Set canvas size to match the loaded image
+                this.canvas.width = img.width;
+                this.canvas.height = img.height;
+                this.overlayCanvas.width = img.width;
+                this.overlayCanvas.height = img.height;
+                
+                // Draw the actual map image
+                this.ctx.drawImage(img, 0, 0);
+                
+                console.log(`Loaded Rome Remastered map: ${img.width}x${img.height}`);
+                resolve();
+            };
+            img.onerror = () => {
+                reject(new Error('Failed to load map.png'));
+            };
+            img.src = 'map.png';
+        });
+    }
+
+    createGeneratedMap() {
+        // Fallback: Create a color-coded map where each region has its unique RGB color
         const width = 1000;
         const height = 700;
         
@@ -150,11 +188,6 @@ class RGBBasedInteractiveMap {
         
         // Draw regions with their specific RGB colors
         this.drawColorCodedRegions(width, height);
-        
-        // Get image data for pixel analysis
-        this.imageData = this.ctx.getImageData(0, 0, width, height);
-        
-        console.log('Color-coded map created successfully');
     }
     
     drawColorCodedRegions(width, height) {
