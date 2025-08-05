@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Regional Map - RGB Based</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Interactive Regional Map</h1>
+            <div class="controls">
+                <button id="clearAll">Clear All Selections</button>
+                <div class="info">
+                    <span id="selectedCount">0</span> regions selected
+                </div>
+            </div>
+        </header>
+        
+        <main>
+            <div class="map-container">
+                <canvas id="mapCanvas"></canvas>
+                <canvas id="overlayCanvas"></canvas>
+                <div id="loadingIndicator" class="loading">Loading map and region data...</div>
+            </div>
+            
+            <div class="sidebar">
+                <div class="region-info">
+                    <h3>Region Information</h3>
+                    <div id="currentRegion">Hover over a region to see details</div>
+                </div>
+                
+                <div class="selected-regions">
+                    <h3>Selected Regions</h3>
+                    <div id="selectedRegions">No regions selected</div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+; Region descriptions for RIS Classic interactive map
+; Format: Region Name, Settlement, Faction, Culture, RGB values (R G B)
+
+; ITALY
+Latium
+	Rome
+	roman_senate
+	Romans
+	52 13 198
+
+Campania
+	Capua
+	roman_senate
+	Campanians
+	128 42 185
+
+Etruria
+	Arretium
+	roman_senate
+	Etruscans
+	205 71 172
+
+Samnium
+	Beneventum
+	roman_senate
+	Samnites
+	95 158 199
+
+Umbria
+	Ariminum
+	roman_senate
+	Romans
+	47 121 186
+
+Cisalpina
+	Patavium
+	roman_senate
+	Romans
+	123 89 173
+
+Apulia
+	Tarentum
+	greek_cities
+	Greeks
+	156 205 84
+
+Bruttium
+	Croton
+	greek_cities
+	Greeks
+	199 156 92
+
+Lucania
+	Grumentum
+	roman_senate
+	Lucanians
+	178 234 67
+
+; SICILY
+Sicily
+	Syracuse
+	greek_cities
+	Greeks
+	234 178 55
+
+; GAUL
+Gallia_Narbonensis
+	Massilia
+	greek_cities
+	Greeks
+	89 201 123
+
+Gallia_Lugdunensis
+	Lugdunum
+	gauls
+	Gauls
+	142 187 98
+
+Gallia_Belgica
+	Durocortorum
+	gauls
+	Gauls
+	76 188 142
+
+Gallia_Aquitania
+	Burdigala
+	gauls
+	Gauls
+	201 234 89
+
+; HISPANIA
+Baetica
+	Hispalis
+	carthage
+	Iberians
+	234 123 67
+
+Lusitania
+	Emerita_Augusta
+	lusitani
+	Lusitanians
+	189 98 142
+
+Tarraconensis
+	Tarraco
+	celtiberians
+	Celtiberians
+	156 234 178
+
+; GERMANIA
+Germania_Superior
+	Mogontiacum
+	germans
+	Germans
+	98 142 189
+
+Germania_Inferior
+	Colonia_Agrippina
+	germans
+	Germans
+	142 156 234
+
+; BRITANNIA
+Britannia_Prima
+	Londinium
+	britons
+	Britons
+	67 234 123
+
+Britannia_Secunda
+	Eboracum
+	britons
+	Britons
+	178 156 234
+
+; AFRICA
+Africa_Proconsularis
+	Carthago
+	carthage
+	Carthaginians
+	234 67 156
+
+Numidia
+	Cirta
+	numidians
+	Numidians
+	123 234 178
+
+Cyrenaica
+	Cyrene
+	egyptians
+	Greeks
+	89 173 201
+
+; AEGYPTUS
+Aegyptus
+	Alexandria
+	egyptians
+	Egyptians
+	173 89 201
+
+; ASIA MINOR
+Asia
+	Pergamum
+	pergamon
+	Greeks
+	201 173 89
+
+Bithynia
+	Nicomedia
+	pontus
+	Greeks
+	156 201 142
+
+Cappadocia
+	Mazaca
+	armenia
+	Cappadocians
+	234 142 98
+
+Galatia
+	Ancyra
+	galatians
+	Galatians
+	98 234 156
+
+; SYRIA
+Syria
+	Antioch
+	seleucid
+	Greeks
+	142 98 234
+
+Mesopotamia
+	Babylon
+	parthia
+	Babylonians
+	189 142 76
+
+; THRACIA
+Thracia
+	Byzantium
+	thrace
+	Thracians
+	76 189 142
+
+Macedonia
+	Pella
+	macedon
+	Macedonians
+	234 189 76
+
+; ILLYRIA
+Illyria
+	Salona
+	illyrians
+	Illyrians
+	142 234 89
+
+Pannonia
+	Siscia
+	dacians
+	Pannonians
+	89 234 142
+
+; DACIA
+Dacia
+	Sarmizegetusa
+	dacians
+	Dacians
+	178 89 234

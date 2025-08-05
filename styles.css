@@ -1,0 +1,253 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1 {
+    color: #2c3e50;
+    font-size: 2rem;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+#clearAll {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+#clearAll:hover {
+    background: #c0392b;
+}
+
+#clearAll:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+}
+
+.info {
+    font-size: 16px;
+    color: #7f8c8d;
+}
+
+main {
+    display: flex;
+    gap: 20px;
+}
+
+.map-container {
+    flex: 1;
+    position: relative;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+#mapCanvas, #overlayCanvas {
+    display: block;
+    cursor: crosshair;
+    max-width: 100%;
+    height: auto;
+}
+
+#overlayCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px;
+    font-size: 18px;
+    color: #7f8c8d;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.sidebar {
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.region-info, .selected-regions {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.region-info h3, .selected-regions h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 5px;
+}
+
+#currentRegion {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #555;
+}
+
+.region-details {
+    margin-top: 10px;
+}
+
+.region-details .region-name {
+    font-weight: bold;
+    font-size: 16px;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.region-details .settlement {
+    color: #3498db;
+    margin-bottom: 3px;
+}
+
+.region-details .culture {
+    color: #27ae60;
+    margin-bottom: 3px;
+}
+
+.region-details .faction {
+    color: #8e44ad;
+    margin-bottom: 3px;
+}
+
+.region-details .rgb-values {
+    color: #95a5a6;
+    font-size: 12px;
+    font-family: monospace;
+}
+
+#selectedRegions {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.region-item {
+    background: #ecf0f1;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 6px;
+    border-left: 4px solid #3498db;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.region-item-content {
+    flex: 1;
+}
+
+.region-item .region-name {
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 4px;
+}
+
+.region-item .region-meta {
+    font-size: 12px;
+    color: #7f8c8d;
+}
+
+.region-item .remove-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-left: 8px;
+    flex-shrink: 0;
+}
+
+.region-item .remove-btn:hover {
+    background: #c0392b;
+}
+
+.error {
+    color: #e74c3c;
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    margin: 10px 0;
+}
+
+.performance-info {
+    font-size: 12px;
+    color: #95a5a6;
+    margin-top: 10px;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+    main {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+    }
+    
+    header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .controls {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
