@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Regional Map</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Interactive Regional Map</h1>
+            <p>Click on colored regions to select them</p>
+        </header>
+        
+        <main>
+            <div class="map-container">
+                <canvas id="mapCanvas" width="800" height="600"></canvas>
+                <div class="loading" id="loading">Loading map...</div>
+            </div>
+            
+            <div class="controls">
+                <div class="selection-info">
+                    <h3>Selected Regions</h3>
+                    <div class="selected-count">Count: <span id="selectedCount">0</span></div>
+                    <ul id="selectedRegions" class="selected-list"></ul>
+                    <button id="clearAll" class="btn btn-secondary">Clear All Selections</button>
+                </div>
+                
+                <div class="instructions">
+                    <h3>Instructions</h3>
+                    <ul>
+                        <li>Hover over regions to see them highlighted</li>
+                        <li>Click to select/deselect regions</li>
+                        <li>Multiple regions can be selected</li>
+                        <li>Use "Clear All" to deselect everything</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
