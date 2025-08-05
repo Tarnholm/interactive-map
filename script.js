@@ -31,7 +31,7 @@ class RGBBasedInteractiveMap {
             this.showLoading('Loading region data...');
             await this.loadRegionData();
             
-            this.showLoading('Generating color-coded map...');
+            this.showLoading('Loading geographical map...');
             await this.createColorCodedMap();
             
             this.showLoading('Building RGB lookup cache...');
@@ -135,71 +135,32 @@ class RGBBasedInteractiveMap {
     }
     
     async createColorCodedMap() {
-        // Create a color-coded map where each region has its unique RGB color
-        const width = 1000;
-        const height = 700;
-        
-        this.canvas.width = width;
-        this.canvas.height = height;
-        this.overlayCanvas.width = width;
-        this.overlayCanvas.height = height;
-        
-        // Fill background with water color
-        this.ctx.fillStyle = '#4A90E2'; // Water blue
-        this.ctx.fillRect(0, 0, width, height);
-        
-        // Draw regions with their specific RGB colors
-        this.drawColorCodedRegions(width, height);
-        
-        // Get image data for pixel analysis
-        this.imageData = this.ctx.getImageData(0, 0, width, height);
-        
-        console.log('Color-coded map created successfully');
-    }
-    
-    drawColorCodedRegions(width, height) {
-        const regions = Array.from(this.regionData.values());
-        const cols = Math.ceil(Math.sqrt(regions.length));
-        const regionWidth = Math.floor((width - 100) / cols);
-        const regionHeight = Math.floor((height - 100) / Math.ceil(regions.length / cols));
-        
-        let x = 50;
-        let y = 50;
-        let col = 0;
-        
-        regions.forEach(region => {
-            if (region.rgb) {
-                // Draw region with its exact RGB color
-                this.ctx.fillStyle = `rgb(${region.rgb.r}, ${region.rgb.g}, ${region.rgb.b})`;
-                this.ctx.fillRect(x, y, regionWidth - 5, regionHeight - 5);
+        // Load the actual geographical map image
+        return new Promise((resolve, reject) => {
+            this.mapImage = new Image();
+            this.mapImage.onload = () => {
+                const width = this.mapImage.width;
+                const height = this.mapImage.height;
                 
-                // Draw a border for visual separation
-                this.ctx.strokeStyle = '#333';
-                this.ctx.lineWidth = 1;
-                this.ctx.strokeRect(x, y, regionWidth - 5, regionHeight - 5);
+                this.canvas.width = width;
+                this.canvas.height = height;
+                this.overlayCanvas.width = width;
+                this.overlayCanvas.height = height;
                 
-                // Add region name text (if space allows)
-                if (regionWidth > 80 && regionHeight > 30) {
-                    this.ctx.fillStyle = '#000';
-                    this.ctx.font = '12px Arial';
-                    this.ctx.textAlign = 'center';
-                    this.ctx.fillText(
-                        region.name.length > 10 ? region.name.substring(0, 10) + '...' : region.name,
-                        x + regionWidth / 2 - 2.5,
-                        y + regionHeight / 2
-                    );
-                }
+                // Draw the geographical map image
+                this.ctx.drawImage(this.mapImage, 0, 0);
                 
-                // Move to next position
-                col++;
-                if (col >= cols) {
-                    col = 0;
-                    x = 50;
-                    y += regionHeight;
-                } else {
-                    x += regionWidth;
-                }
-            }
+                // Get image data for pixel analysis
+                this.imageData = this.ctx.getImageData(0, 0, width, height);
+                
+                console.log('Geographical map loaded successfully');
+                resolve();
+            };
+            this.mapImage.onerror = () => {
+                console.error('Failed to load map image');
+                reject(new Error('Failed to load map image'));
+            };
+            this.mapImage.src = 'roman_empire_map.png';
         });
     }
     
